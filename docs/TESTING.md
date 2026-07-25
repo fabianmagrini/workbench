@@ -11,6 +11,10 @@ xcodebuild test -project Workbench.xcodeproj -scheme Workbench \
   -destination 'platform=macOS'
 ```
 
+The current expected totals are 15 Swift Testing tests across five suites and
+two XCTest UI tests. A change to either total should be reflected in this file
+so unexpectedly undiscovered tests are noticeable.
+
 Run the application with:
 
 ```sh
@@ -55,6 +59,10 @@ The `WorkbenchUITests` target covers:
 UI tests launch with `--ui-testing`. This selects an in-memory SwiftData store
 and the deterministic preview agent, keeping the user's database untouched and
 preventing tests from invoking an authenticated Codex CLI session.
+
+The UI command requires an interactive macOS login session because XCTest must
+launch and automate the application. It is unsuitable for a headless runner
+without a configured GUI test session.
 
 ## Manual launch smoke test
 

@@ -45,8 +45,9 @@ WorkbenchApp
   │    ├─ Task detail / live console
   │    └─ Inline inspector
   └─ AppModel (@MainActor)
-       ├─ AgentProvider
-       └─ SwiftData ModelContext
+       └─ SessionOrchestrator (@MainActor)
+            ├─ AgentProvider
+            └─ SwiftData ModelContext
 ```
 
 `WorkbenchApp` owns the shared SwiftData container. `AppModel` owns transient
@@ -89,6 +90,15 @@ sandbox and never bypasses Codex approvals or sandboxing.
 captures stdout and stderr independently, supports working-directory and
 environment configuration, and terminates child processes when their calling
 task is cancelled.
+
+The current process boundary returns captured output when execution terminates,
+so `CodexCLIProvider` reduces JSONL records after process completion. The
+`AgentProvider` event contract already supports incremental delivery; adding a
+streaming process API is the remaining step for truly live Codex output.
+
+The application currently composes one production provider. A task's `agent`
+field is durable metadata, but selecting Claude Code, Amp, or Gemini CLI does
+not yet route execution to a different provider.
 
 ## Concurrency boundaries
 
