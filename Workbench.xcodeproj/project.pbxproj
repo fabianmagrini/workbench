@@ -1,0 +1,345 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		100000000000000000000001 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000001 /* AppModel.swift */; };
+		100000000000000000000002 /* WorkbenchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000002 /* WorkbenchApp.swift */; };
+		100000000000000000000003 /* RepositoryBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000003 /* RepositoryBrowserView.swift */; };
+		100000000000000000000004 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000004 /* HistoryView.swift */; };
+		100000000000000000000005 /* InspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000005 /* InspectorView.swift */; };
+		100000000000000000000006 /* WorkbenchRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000006 /* WorkbenchRootView.swift */; };
+		100000000000000000000007 /* SessionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000007 /* SessionsView.swift */; };
+		100000000000000000000008 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000008 /* SettingsView.swift */; };
+		100000000000000000000009 /* TaskViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000009 /* TaskViews.swift */; };
+		10000000000000000000000A /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000A /* Models.swift */; };
+		10000000000000000000000B /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000B /* Services.swift */; };
+		10000000000000000000000C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000C /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		200000000000000000000001 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		200000000000000000000002 /* WorkbenchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkbenchApp.swift; sourceTree = "<group>"; };
+		200000000000000000000003 /* RepositoryBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryBrowserView.swift; sourceTree = "<group>"; };
+		200000000000000000000004 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		200000000000000000000005 /* InspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorView.swift; sourceTree = "<group>"; };
+		200000000000000000000006 /* WorkbenchRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkbenchRootView.swift; sourceTree = "<group>"; };
+		200000000000000000000007 /* SessionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsView.swift; sourceTree = "<group>"; };
+		200000000000000000000008 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		200000000000000000000009 /* TaskViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskViews.swift; sourceTree = "<group>"; };
+		20000000000000000000000A /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		20000000000000000000000B /* Services.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
+		20000000000000000000000C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		20000000000000000000000D /* Workbench.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Workbench.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		300000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		400000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				400000000000000000000002 /* Sources */,
+				40000000000000000000000D /* Resources */,
+				40000000000000000000000E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		400000000000000000000002 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				400000000000000000000003 /* App */,
+				400000000000000000000004 /* Features */,
+				40000000000000000000000B /* Models */,
+				40000000000000000000000C /* Services */,
+			);
+			name = Sources;
+			path = Sources/Workbench;
+			sourceTree = SOURCE_ROOT;
+		};
+		400000000000000000000003 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000001 /* AppModel.swift */,
+				200000000000000000000002 /* WorkbenchApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		400000000000000000000004 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				400000000000000000000005 /* Files */,
+				400000000000000000000006 /* History */,
+				400000000000000000000007 /* Inspector */,
+				400000000000000000000008 /* Root */,
+				400000000000000000000009 /* Sessions */,
+				40000000000000000000000A /* Settings */,
+				40000000000000000000000F /* Tasks */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		400000000000000000000005 /* Files */ = {
+			isa = PBXGroup;
+			children = (200000000000000000000003 /* RepositoryBrowserView.swift */,);
+			path = Files;
+			sourceTree = "<group>";
+		};
+		400000000000000000000006 /* History */ = {
+			isa = PBXGroup;
+			children = (200000000000000000000004 /* HistoryView.swift */,);
+			path = History;
+			sourceTree = "<group>";
+		};
+		400000000000000000000007 /* Inspector */ = {
+			isa = PBXGroup;
+			children = (200000000000000000000005 /* InspectorView.swift */,);
+			path = Inspector;
+			sourceTree = "<group>";
+		};
+		400000000000000000000008 /* Root */ = {
+			isa = PBXGroup;
+			children = (200000000000000000000006 /* WorkbenchRootView.swift */,);
+			path = Root;
+			sourceTree = "<group>";
+		};
+		400000000000000000000009 /* Sessions */ = {
+			isa = PBXGroup;
+			children = (200000000000000000000007 /* SessionsView.swift */,);
+			path = Sessions;
+			sourceTree = "<group>";
+		};
+		40000000000000000000000A /* Settings */ = {
+			isa = PBXGroup;
+			children = (200000000000000000000008 /* SettingsView.swift */,);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		40000000000000000000000B /* Models */ = {
+			isa = PBXGroup;
+			children = (20000000000000000000000A /* Models.swift */,);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		40000000000000000000000C /* Services */ = {
+			isa = PBXGroup;
+			children = (20000000000000000000000B /* Services.swift */,);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		40000000000000000000000D /* Resources */ = {
+			isa = PBXGroup;
+			children = (20000000000000000000000C /* Assets.xcassets */,);
+			path = Resources;
+			sourceTree = SOURCE_ROOT;
+		};
+		40000000000000000000000E /* Products */ = {
+			isa = PBXGroup;
+			children = (20000000000000000000000D /* Workbench.app */,);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		40000000000000000000000F /* Tasks */ = {
+			isa = PBXGroup;
+			children = (200000000000000000000009 /* TaskViews.swift */,);
+			path = Tasks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		500000000000000000000001 /* Workbench */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 600000000000000000000002 /* Build configuration list for PBXNativeTarget "Workbench" */;
+			buildPhases = (
+				700000000000000000000001 /* Sources */,
+				300000000000000000000001 /* Frameworks */,
+				700000000000000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Workbench;
+			productName = Workbench;
+			productReference = 20000000000000000000000D /* Workbench.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		800000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2660;
+				LastUpgradeCheck = 2660;
+				TargetAttributes = {
+					500000000000000000000001 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+				};
+			};
+			buildConfigurationList = 600000000000000000000001 /* Build configuration list for PBXProject "Workbench" */;
+			compatibilityVersion = "Xcode 16.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (en, Base,);
+			mainGroup = 400000000000000000000001;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 40000000000000000000000E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (500000000000000000000001 /* Workbench */,);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		700000000000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (10000000000000000000000C /* Assets.xcassets in Resources */,);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		700000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				100000000000000000000001 /* AppModel.swift in Sources */,
+				100000000000000000000002 /* WorkbenchApp.swift in Sources */,
+				100000000000000000000003 /* RepositoryBrowserView.swift in Sources */,
+				100000000000000000000004 /* HistoryView.swift in Sources */,
+				100000000000000000000005 /* InspectorView.swift in Sources */,
+				100000000000000000000006 /* WorkbenchRootView.swift in Sources */,
+				100000000000000000000007 /* SessionsView.swift in Sources */,
+				100000000000000000000008 /* SettingsView.swift in Sources */,
+				100000000000000000000009 /* TaskViews.swift in Sources */,
+				10000000000000000000000A /* Models.swift in Sources */,
+				10000000000000000000000B /* Services.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		900000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		900000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		900000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Workbench;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Fabian Magrini.";
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fabianmagrini.Workbench;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		900000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Workbench;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Fabian Magrini.";
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fabianmagrini.Workbench;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		600000000000000000000001 /* Build configuration list for PBXProject "Workbench" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				900000000000000000000001 /* Debug */,
+				900000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		600000000000000000000002 /* Build configuration list for PBXNativeTarget "Workbench" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				900000000000000000000003 /* Debug */,
+				900000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 800000000000000000000001 /* Project object */;
+}

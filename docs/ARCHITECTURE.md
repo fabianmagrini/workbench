@@ -6,6 +6,11 @@ Workbench is a local-first native macOS control center for AI coding agents. It
 coordinates work but does not replace an editor, terminal, Git host, or remote
 execution environment.
 
+`Workbench.xcodeproj` owns the distributable macOS application target,
+application metadata, resources, signing configuration, and shared run scheme.
+`Package.swift` provides a lightweight command-line build and the unit-test
+target over the same source tree.
+
 ## Runtime shape
 
 ```text

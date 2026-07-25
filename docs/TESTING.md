@@ -5,6 +5,8 @@
 ```sh
 swift build
 swift test
+xcodebuild -project Workbench.xcodeproj -scheme Workbench \
+  -configuration Debug build CODE_SIGNING_ALLOWED=NO
 ```
 
 Run the application with:

@@ -13,8 +13,9 @@ reviewing AI coding agents. It follows the product definition in
 - Swift Package Manager
 - macOS 15+
 
-The native source is under `Sources/Workbench`. Open `Package.swift` in Xcode
-and run the `Workbench` executable scheme.
+The native source is under `Sources/Workbench`. Open `Workbench.xcodeproj` in
+Xcode and run the shared `Workbench` application scheme. `Package.swift`
+remains available for command-line builds and unit tests.
 
 The MVP includes local workspace and task persistence, native three-column
 navigation, an inspector, task creation and filtering, a streaming
@@ -34,6 +35,8 @@ repository browsing, Settings, and keyboard commands.
 ```sh
 swift build
 swift test
+xcodebuild -project Workbench.xcodeproj -scheme Workbench \
+  -configuration Debug build CODE_SIGNING_ALLOWED=NO
 ```
 
 Xcode’s license must be accepted on the development Mac before Apple’s Swift
