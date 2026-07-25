@@ -25,7 +25,18 @@
 		100000000000000000000010 /* SessionOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000011 /* SessionOrchestrator.swift */; };
 		100000000000000000000011 /* ProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000012 /* ProcessRunner.swift */; };
 		100000000000000000000012 /* CodexCLIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000013 /* CodexCLIProvider.swift */; };
+		100000000000000000000013 /* WorkbenchUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000015 /* WorkbenchUITests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A00000000000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 800000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 500000000000000000000001;
+			remoteInfo = Workbench;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		200000000000000000000001 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
@@ -47,10 +58,19 @@
 		200000000000000000000011 /* SessionOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionOrchestrator.swift; sourceTree = "<group>"; };
 		200000000000000000000012 /* ProcessRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessRunner.swift; sourceTree = "<group>"; };
 		200000000000000000000013 /* CodexCLIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIProvider.swift; sourceTree = "<group>"; };
+		200000000000000000000014 /* WorkbenchUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WorkbenchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		200000000000000000000015 /* WorkbenchUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkbenchUITests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		300000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		300000000000000000000002 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -65,6 +85,7 @@
 			children = (
 				400000000000000000000002 /* Sources */,
 				40000000000000000000000D /* Resources */,
+				400000000000000000000012 /* Tests */,
 				40000000000000000000000E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -164,7 +185,10 @@
 		};
 		40000000000000000000000E /* Products */ = {
 			isa = PBXGroup;
-			children = (20000000000000000000000D /* Workbench.app */,);
+			children = (
+				20000000000000000000000D /* Workbench.app */,
+				200000000000000000000014 /* WorkbenchUITests.xctest */,
+			);
 			name = Products;
 			sourceTree = "<group>";
 		};
@@ -194,6 +218,15 @@
 			path = WorkbenchAgents;
 			sourceTree = "<group>";
 		};
+		400000000000000000000012 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000015 /* WorkbenchUITests.swift */,
+			);
+			name = Tests;
+			path = tests/WorkbenchUITests;
+			sourceTree = SOURCE_ROOT;
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -214,6 +247,24 @@
 			productReference = 20000000000000000000000D /* Workbench.app */;
 			productType = "com.apple.product-type.application";
 		};
+		500000000000000000000002 /* WorkbenchUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 600000000000000000000003 /* Build configuration list for PBXNativeTarget "WorkbenchUITests" */;
+			buildPhases = (
+				700000000000000000000003 /* Sources */,
+				300000000000000000000002 /* Frameworks */,
+				700000000000000000000004 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A00000000000000000000002 /* PBXTargetDependency */,
+			);
+			name = WorkbenchUITests;
+			productName = WorkbenchUITests;
+			productReference = 200000000000000000000014 /* WorkbenchUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -226,6 +277,10 @@
 				TargetAttributes = {
 					500000000000000000000001 = {
 						CreatedOnToolsVersion = 26.6;
+					};
+					500000000000000000000002 = {
+						CreatedOnToolsVersion = 26.6;
+						TestTargetID = 500000000000000000000001;
 					};
 				};
 			};
@@ -240,7 +295,10 @@
 			productRefGroup = 40000000000000000000000E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
-			targets = (500000000000000000000001 /* Workbench */,);
+			targets = (
+				500000000000000000000001 /* Workbench */,
+				500000000000000000000002 /* WorkbenchUITests */,
+			);
 		};
 /* End PBXProject section */
 
@@ -249,6 +307,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (10000000000000000000000C /* Assets.xcassets in Resources */,);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		700000000000000000000004 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
@@ -278,7 +343,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		700000000000000000000003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				100000000000000000000013 /* WorkbenchUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A00000000000000000000002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 500000000000000000000001 /* Workbench */;
+			targetProxy = A00000000000000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		900000000000000000000001 /* Debug */ = {
@@ -360,6 +441,32 @@
 			};
 			name = Release;
 		};
+		900000000000000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fabianmagrini.WorkbenchUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 6.0;
+				TEST_TARGET_NAME = Workbench;
+			};
+			name = Debug;
+		};
+		900000000000000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fabianmagrini.WorkbenchUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 6.0;
+				TEST_TARGET_NAME = Workbench;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -377,6 +484,15 @@
 			buildConfigurations = (
 				900000000000000000000003 /* Debug */,
 				900000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		600000000000000000000003 /* Build configuration list for PBXNativeTarget "WorkbenchUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				900000000000000000000005 /* Debug */,
+				900000000000000000000006 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

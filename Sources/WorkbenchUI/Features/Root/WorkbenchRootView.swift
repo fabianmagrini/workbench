@@ -1,15 +1,22 @@
 import SwiftData
 import SwiftUI
 #if SWIFT_PACKAGE
+import WorkbenchAgents
 import WorkbenchCore
 #endif
 
 public struct WorkbenchRootView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Workspace.updatedAt, order: .reverse) private var workspaces: [Workspace]
-    @State private var model = AppModel()
+    @State private var model: AppModel
 
-    public init() {}
+    public init() {
+        let isUITesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+        let provider: any AgentProvider = isUITesting
+            ? PreviewAgentProvider()
+            : CodexCLIProvider()
+        _model = State(initialValue: AppModel(agentProvider: provider))
+    }
 
     public var body: some View {
         HStack(spacing: 0) {
@@ -47,6 +54,7 @@ public struct WorkbenchRootView: View {
                 } label: {
                     Label("Run", systemImage: "play.fill")
                 }
+                .accessibilityIdentifier("task.run")
                 .disabled(model.selectedTask?.status == .running)
 
                 Button {
@@ -54,6 +62,7 @@ public struct WorkbenchRootView: View {
                 } label: {
                     Label("New Task", systemImage: "plus")
                 }
+                .accessibilityIdentifier("task.new")
                 .buttonStyle(.borderedProminent)
             }
         }
@@ -73,6 +82,7 @@ public struct WorkbenchRootView: View {
         .task {
             model.seedIfNeeded(context: modelContext, workspaces: workspaces)
         }
+        .accessibilityIdentifier("workbench.root")
     }
 }
 

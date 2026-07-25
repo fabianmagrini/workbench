@@ -16,7 +16,7 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "WorkbenchApp",
-            dependencies: ["WorkbenchCore", "WorkbenchUI"],
+            dependencies: ["WorkbenchCore", "WorkbenchAgents", "WorkbenchUI"],
             path: "Sources/WorkbenchApp"
         ),
         .target(

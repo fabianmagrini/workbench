@@ -131,6 +131,7 @@ struct TaskDetailView: View {
                         Button("Run", systemImage: "play.fill") {
                             model.runSelectedTask(context: modelContext)
                         }
+                        .accessibilityIdentifier("task.detail.run")
                     }
                 }
             }
@@ -173,6 +174,7 @@ struct StatusBadge: View {
 
     var body: some View {
         Label(status.rawValue, systemImage: "circle.fill")
+            .accessibilityIdentifier("task.status.\(status.rawValue)")
             .font(.caption2.weight(.medium))
             .foregroundStyle(status.color)
             .padding(.horizontal, 7)
@@ -312,6 +314,7 @@ struct NewTaskView: View {
         NavigationStack {
             Form {
                 TextField("Title", text: $title, prompt: Text("Implement JWT refresh flow"))
+                    .accessibilityIdentifier("task.new.title")
 
                 Picker("Agent", selection: $agent) {
                     ForEach(["Codex", "Claude Code", "Amp", "Gemini CLI"], id: \.self) {
@@ -326,6 +329,7 @@ struct NewTaskView: View {
                 }
 
                 TextEditor(text: $prompt)
+                    .accessibilityIdentifier("task.new.prompt")
                     .font(.body.monospaced())
                     .frame(minHeight: 180)
                     .overlay(alignment: .topLeading) {
@@ -355,6 +359,7 @@ struct NewTaskView: View {
                         )
                         dismiss()
                     }
+                    .accessibilityIdentifier("task.new.create")
                     .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || prompt.isEmpty)
                 }
             }

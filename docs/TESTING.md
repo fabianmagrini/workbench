@@ -7,6 +7,8 @@ swift build
 swift test
 xcodebuild -project Workbench.xcodeproj -scheme Workbench \
   -configuration Debug build CODE_SIGNING_ALLOWED=NO
+xcodebuild test -project Workbench.xcodeproj -scheme Workbench \
+  -destination 'platform=macOS'
 ```
 
 Run the application with:
@@ -40,6 +42,19 @@ do not affect the user's local Workbench database.
 The tests import `WorkbenchCore`, `WorkbenchAgents`, and `WorkbenchUI`
 independently. Accidental dependency leakage or missing public API surface
 therefore fails at compile time.
+
+## UI tests
+
+The `WorkbenchUITests` target covers:
+
+- cold launch into a seeded workspace;
+- visibility of representative seeded tasks;
+- creating a task through the native sheet;
+- running that task and observing its completed status.
+
+UI tests launch with `--ui-testing`. This selects an in-memory SwiftData store
+and the deterministic preview agent, keeping the user's database untouched and
+preventing tests from invoking an authenticated Codex CLI session.
 
 ## Manual launch smoke test
 

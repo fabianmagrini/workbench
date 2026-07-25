@@ -11,11 +11,14 @@ struct WorkbenchApp: App {
 
     init() {
         do {
+            let isUITesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+            let configuration = ModelConfiguration(isStoredInMemoryOnly: isUITesting)
             modelContainer = try ModelContainer(
                 for: Workspace.self,
                 WorkbenchTask.self,
                 AgentSession.self,
-                LogEntry.self
+                LogEntry.self,
+                configurations: configuration
             )
         } catch {
             fatalError("Unable to initialize Workbench data: \(error)")
