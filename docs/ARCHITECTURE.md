@@ -49,9 +49,10 @@ WorkbenchApp
 ```
 
 `WorkbenchApp` owns the shared SwiftData container. `AppModel` owns transient
-selection and presentation state and coordinates asynchronous agent events with
-persistent models. Views remain declarative and receive either `AppModel` or a
-specific persistent model.
+selection and presentation state. `SessionOrchestrator` owns execution jobs,
+consumes asynchronous agent events, and applies lifecycle changes to persistent
+task and session models. Views remain declarative and receive either `AppModel`
+or a specific persistent model.
 
 ## Data model
 
@@ -69,11 +70,12 @@ sessions, and logs. SwiftData is the source of truth for durable state.
 
 Every integration conforms to `AgentProvider`, a `Sendable` protocol:
 
-1. `AppModel` creates an immutable `TaskSnapshot`.
-2. The provider returns an `AsyncThrowingStream<AgentEvent, Error>`.
-3. `AppModel` consumes the stream on the main actor.
-4. Log, file, approval, and completion events update the active session.
-5. SwiftData persists the resulting state.
+1. `AppModel` delegates the selected task to `SessionOrchestrator`.
+2. `SessionOrchestrator` creates an immutable `TaskSnapshot`.
+3. The provider returns an `AsyncThrowingStream<AgentEvent, Error>`.
+4. The orchestrator consumes the stream on the main actor.
+5. Log, file, approval, and completion events update the active session.
+6. SwiftData persists the resulting state.
 
 `PreviewAgentProvider` is deterministic local scaffolding. A real CLI
 integration should add a new actor conforming to `AgentProvider` and translate
@@ -82,6 +84,8 @@ process output into the existing event types.
 ## Concurrency boundaries
 
 - `AppModel` is `@MainActor` because it mutates UI and SwiftData state.
+- `SessionOrchestrator` is `@MainActor` because it reduces agent events into
+  SwiftData models and owns cancellable execution jobs.
 - Agent and Git services are actors.
 - Task snapshots and events are `Sendable` values crossing actor boundaries.
 - One `Swift.Task` is retained per running Workbench task, enabling

@@ -22,6 +22,7 @@
 		10000000000000000000000D /* AgentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000E /* AgentProvider.swift */; };
 		10000000000000000000000E /* WorkbenchCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000F /* WorkbenchCommands.swift */; };
 		10000000000000000000000F /* DomainStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000010 /* DomainStyles.swift */; };
+		100000000000000000000010 /* SessionOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000011 /* SessionOrchestrator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		20000000000000000000000E /* AgentProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentProvider.swift; sourceTree = "<group>"; };
 		20000000000000000000000F /* WorkbenchCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkbenchCommands.swift; sourceTree = "<group>"; };
 		200000000000000000000010 /* DomainStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainStyles.swift; sourceTree = "<group>"; };
+		200000000000000000000011 /* SessionOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionOrchestrator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,7 +179,10 @@
 		};
 		400000000000000000000011 /* Agents */ = {
 			isa = PBXGroup;
-			children = (20000000000000000000000E /* AgentProvider.swift */,);
+			children = (
+				20000000000000000000000E /* AgentProvider.swift */,
+				200000000000000000000011 /* SessionOrchestrator.swift */,
+			);
 			path = WorkbenchAgents;
 			sourceTree = "<group>";
 		};
@@ -259,6 +264,7 @@
 				10000000000000000000000D /* AgentProvider.swift in Sources */,
 				10000000000000000000000E /* WorkbenchCommands.swift in Sources */,
 				10000000000000000000000F /* DomainStyles.swift in Sources */,
+				100000000000000000000010 /* SessionOrchestrator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

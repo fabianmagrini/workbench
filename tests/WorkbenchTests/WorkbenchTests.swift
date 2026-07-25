@@ -111,7 +111,7 @@ struct AppModelTests {
         #expect(task.sessions.count == 1)
         #expect(task.sessions[0].status == .completed)
         #expect(task.sessions[0].exitCode == 0)
-        #expect(task.sessions[0].changedFiles == ["Sources/Workbench/App/WorkbenchApp.swift"])
+        #expect(task.sessions[0].changedFiles == ["Sources/WorkbenchApp/WorkbenchApp.swift"])
         #expect(task.sessions[0].logs.contains { $0.message == "Started" })
     }
 
@@ -144,6 +144,38 @@ struct AppModelTests {
         #expect(task.sessions.first?.status == .cancelled)
         #expect(task.sessions.first?.finishedAt != nil)
         #expect(task.sessions.first?.logs.contains { $0.level == .warning } == true)
+    }
+}
+
+@Suite("Session orchestrator")
+struct SessionOrchestratorTests {
+    @Test @MainActor func preventsDuplicateRunsForTheSameTask() async throws {
+        let container = try TestStore.makeContainer()
+        let context = container.mainContext
+        let workspace = Workspace(name: "Workbench", repositoryPath: "/tmp/workbench")
+        let task = WorkbenchTask(
+            title: "Long task",
+            prompt: "Keep running",
+            agent: "Test Agent",
+            status: .queued,
+            workspace: workspace
+        )
+        context.insert(workspace)
+        context.insert(task)
+
+        let provider = SuspendedAgentProvider()
+        let orchestrator = SessionOrchestrator(agentProvider: provider)
+        let firstSession = orchestrator.run(task: task, context: context)
+        let duplicateSession = orchestrator.run(task: task, context: context)
+
+        #expect(firstSession != nil)
+        #expect(duplicateSession == nil)
+        #expect(orchestrator.isRunning(taskID: task.id))
+        #expect(task.sessions.count == 1)
+
+        orchestrator.cancel(task: task, context: context)
+        try await eventually { await provider.wasCancelled(task.id) }
+        #expect(!orchestrator.isRunning(taskID: task.id))
     }
 }
 
@@ -202,7 +234,7 @@ private actor ImmediateAgentProvider: AgentProvider {
     func execute(task: TaskSnapshot) async -> AsyncThrowingStream<AgentEvent, Error> {
         AsyncThrowingStream { continuation in
             continuation.yield(.log(.info, "Started"))
-            continuation.yield(.changedFile("Sources/Workbench/App/WorkbenchApp.swift"))
+            continuation.yield(.changedFile("Sources/WorkbenchApp/WorkbenchApp.swift"))
             continuation.yield(.finished(exitCode: 0))
             continuation.finish()
         }
