@@ -11,12 +11,34 @@ application metadata, resources, signing configuration, and shared run scheme.
 `Package.swift` provides a lightweight command-line build and the unit-test
 target over the same source tree.
 
+## Module boundaries
+
+- `WorkbenchCore` owns SwiftData models, domain enums, and repository services.
+  It has no dependency on UI or agent implementations.
+- `WorkbenchAgents` owns the `AgentProvider` contract, sendable event values,
+  and concrete providers. It depends only on `WorkbenchCore`.
+- `WorkbenchUI` owns application orchestration, commands, styling, and SwiftUI
+  features. It depends on Core and Agents.
+- `WorkbenchApp` is the executable composition root. It creates the
+  `ModelContainer` and installs the root view, Settings scene, and commands.
+
+The dependency direction is:
+
+```text
+WorkbenchApp → WorkbenchUI → WorkbenchAgents → WorkbenchCore
+                       └──────────────────────→ WorkbenchCore
+```
+
+The Xcode application target compiles the same files directly into the app
+bundle, while SwiftPM enforces the module boundaries during command-line builds
+and tests.
+
 ## Runtime shape
 
 ```text
 WorkbenchApp
   ├─ ModelContainer (SwiftData)
-  ├─ WorkbenchRootView
+  ├─ WorkbenchUI.WorkbenchRootView
   │    ├─ Sidebar
   │    ├─ Workspace content
   │    ├─ Task detail / live console

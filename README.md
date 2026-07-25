@@ -51,11 +51,16 @@ toolchain can compile the package.
 ## Project layout
 
 ```text
-Sources/Workbench/
-  App/          Application entry point and orchestration state
-  Models/       SwiftData models and domain enums
-  Services/     Agent and Git service boundaries
-  Features/     SwiftUI feature views
+Sources/WorkbenchApp/
+  WorkbenchApp.swift   Thin executable and scene composition
+Sources/WorkbenchCore/
+  Models/              SwiftData models and domain enums
+  Services/            Local repository services
+Sources/WorkbenchAgents/
+  AgentProvider.swift  Agent contract, events, and preview provider
+Sources/WorkbenchUI/
+  App/                 UI orchestration, commands, and domain styling
+  Features/            SwiftUI feature views
 tests/
   WorkbenchTests/
 docs/

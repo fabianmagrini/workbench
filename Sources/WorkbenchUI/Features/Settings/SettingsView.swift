@@ -1,11 +1,13 @@
 import SwiftUI
 
-struct SettingsView: View {
+public struct SettingsView: View {
     @AppStorage("defaultAgent") private var defaultAgent = "Codex"
     @AppStorage("showNotifications") private var showNotifications = true
     @AppStorage("confirmBeforeRunning") private var confirmBeforeRunning = false
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         TabView {
             Form {
                 Picker("Default agent", selection: $defaultAgent) {

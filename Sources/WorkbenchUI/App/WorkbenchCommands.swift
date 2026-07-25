@@ -1,45 +1,13 @@
-import SwiftData
 import SwiftUI
 
-@main
-struct WorkbenchApp: App {
-    private let modelContainer: ModelContainer
-
-    init() {
-        do {
-            modelContainer = try ModelContainer(
-                for: Workspace.self,
-                WorkbenchTask.self,
-                AgentSession.self,
-                LogEntry.self
-            )
-        } catch {
-            fatalError("Unable to initialize Workbench data: \(error)")
-        }
-    }
-
-    var body: some Scene {
-        WindowGroup {
-            WorkbenchRootView()
-        }
-        .modelContainer(modelContainer)
-        .commands {
-            WorkbenchCommands()
-        }
-
-        Settings {
-            SettingsView()
-        }
-        .modelContainer(modelContainer)
-    }
-}
-
-private struct WorkbenchCommands: Commands {
+public struct WorkbenchCommands: Commands {
     @FocusedValue(\.newTaskAction) private var newTask
     @FocusedValue(\.runTaskAction) private var runTask
     @FocusedValue(\.cancelTaskAction) private var cancelTask
 
-    var body: some Commands {
+    public init() {}
+
+    public var body: some Commands {
         CommandGroup(replacing: .newItem) {
             Button("New Task") { newTask?() }
                 .keyboardShortcut("n", modifiers: .command)
@@ -58,19 +26,19 @@ private struct WorkbenchCommands: Commands {
     }
 }
 
-private struct NewTaskActionKey: FocusedValueKey {
-    typealias Value = () -> Void
+public struct NewTaskActionKey: FocusedValueKey {
+    public typealias Value = () -> Void
 }
 
-private struct RunTaskActionKey: FocusedValueKey {
-    typealias Value = () -> Void
+public struct RunTaskActionKey: FocusedValueKey {
+    public typealias Value = () -> Void
 }
 
-private struct CancelTaskActionKey: FocusedValueKey {
-    typealias Value = () -> Void
+public struct CancelTaskActionKey: FocusedValueKey {
+    public typealias Value = () -> Void
 }
 
-extension FocusedValues {
+public extension FocusedValues {
     var newTaskAction: (() -> Void)? {
         get { self[NewTaskActionKey.self] }
         set { self[NewTaskActionKey.self] = newValue }

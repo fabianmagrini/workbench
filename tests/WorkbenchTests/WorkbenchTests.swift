@@ -1,7 +1,9 @@
 import Foundation
 import SwiftData
 import Testing
-@testable import Workbench
+@testable import WorkbenchAgents
+@testable import WorkbenchCore
+@testable import WorkbenchUI
 
 @Suite("Domain models")
 struct DomainModelTests {

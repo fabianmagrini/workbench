@@ -1,4 +1,7 @@
 import SwiftUI
+#if SWIFT_PACKAGE
+import WorkbenchCore
+#endif
 
 struct InspectorView: View {
     let task: WorkbenchTask?

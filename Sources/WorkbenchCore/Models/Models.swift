@@ -1,8 +1,7 @@
 import Foundation
 import SwiftData
-import SwiftUI
 
-enum TaskStatus: String, Codable, CaseIterable, Identifiable {
+public enum TaskStatus: String, Codable, CaseIterable, Identifiable, Sendable {
     case draft = "Draft"
     case queued = "Queued"
     case running = "Running"
@@ -11,36 +10,18 @@ enum TaskStatus: String, Codable, CaseIterable, Identifiable {
     case completed = "Completed"
     case cancelled = "Cancelled"
 
-    var id: Self { self }
-
-    var color: Color {
-        switch self {
-        case .draft, .queued: .secondary
-        case .running: .green
-        case .waitingApproval: .orange
-        case .failed, .cancelled: .red
-        case .completed: .blue
-        }
-    }
+    public var id: Self { self }
 }
 
-enum TaskPriority: String, Codable, CaseIterable, Identifiable {
+public enum TaskPriority: String, Codable, CaseIterable, Identifiable, Sendable {
     case low = "Low"
     case medium = "Medium"
     case high = "High"
 
-    var id: Self { self }
-
-    var color: Color {
-        switch self {
-        case .low: .secondary
-        case .medium: .orange
-        case .high: .red
-        }
-    }
+    public var id: Self { self }
 }
 
-enum LogLevel: String, Codable {
+public enum LogLevel: String, Codable, Sendable {
     case info
     case success
     case warning
@@ -48,22 +29,22 @@ enum LogLevel: String, Codable {
 }
 
 @Model
-final class Workspace {
-    @Attribute(.unique) var id: UUID
-    var name: String
-    var repositoryPath: String
-    var gitBranch: String
-    var preferredAgent: String
-    var isFavorite: Bool
-    var isArchived: Bool
-    var tags: [String]
-    var createdAt: Date
-    var updatedAt: Date
+public final class Workspace {
+    @Attribute(.unique) public var id: UUID
+    public var name: String
+    public var repositoryPath: String
+    public var gitBranch: String
+    public var preferredAgent: String
+    public var isFavorite: Bool
+    public var isArchived: Bool
+    public var tags: [String]
+    public var createdAt: Date
+    public var updatedAt: Date
 
     @Relationship(deleteRule: .cascade, inverse: \WorkbenchTask.workspace)
-    var tasks: [WorkbenchTask] = []
+    public var tasks: [WorkbenchTask] = []
 
-    init(
+    public init(
         id: UUID = UUID(),
         name: String,
         repositoryPath: String,
@@ -89,23 +70,23 @@ final class Workspace {
 }
 
 @Model
-final class WorkbenchTask {
-    @Attribute(.unique) var id: UUID
-    var title: String
-    var taskDescription: String
-    var prompt: String
-    var agent: String
-    var status: TaskStatus
-    var priority: TaskPriority
-    var labels: [String]
-    var createdAt: Date
-    var updatedAt: Date
-    var workspace: Workspace?
+public final class WorkbenchTask {
+    @Attribute(.unique) public var id: UUID
+    public var title: String
+    public var taskDescription: String
+    public var prompt: String
+    public var agent: String
+    public var status: TaskStatus
+    public var priority: TaskPriority
+    public var labels: [String]
+    public var createdAt: Date
+    public var updatedAt: Date
+    public var workspace: Workspace?
 
     @Relationship(deleteRule: .cascade, inverse: \AgentSession.task)
-    var sessions: [AgentSession] = []
+    public var sessions: [AgentSession] = []
 
-    init(
+    public init(
         id: UUID = UUID(),
         title: String,
         taskDescription: String = "",
@@ -133,20 +114,20 @@ final class WorkbenchTask {
 }
 
 @Model
-final class AgentSession {
-    @Attribute(.unique) var id: UUID
-    var agent: String
-    var startedAt: Date
-    var finishedAt: Date?
-    var exitCode: Int?
-    var status: TaskStatus
-    var changedFiles: [String]
-    var task: WorkbenchTask?
+public final class AgentSession {
+    @Attribute(.unique) public var id: UUID
+    public var agent: String
+    public var startedAt: Date
+    public var finishedAt: Date?
+    public var exitCode: Int?
+    public var status: TaskStatus
+    public var changedFiles: [String]
+    public var task: WorkbenchTask?
 
     @Relationship(deleteRule: .cascade, inverse: \LogEntry.session)
-    var logs: [LogEntry] = []
+    public var logs: [LogEntry] = []
 
-    init(
+    public init(
         id: UUID = UUID(),
         agent: String,
         startedAt: Date = .now,
@@ -168,14 +149,14 @@ final class AgentSession {
 }
 
 @Model
-final class LogEntry {
-    @Attribute(.unique) var id: UUID
-    var timestamp: Date
-    var level: LogLevel
-    var message: String
-    var session: AgentSession?
+public final class LogEntry {
+    @Attribute(.unique) public var id: UUID
+    public var timestamp: Date
+    public var level: LogLevel
+    public var message: String
+    public var session: AgentSession?
 
-    init(
+    public init(
         id: UUID = UUID(),
         timestamp: Date = .now,
         level: LogLevel = .info,

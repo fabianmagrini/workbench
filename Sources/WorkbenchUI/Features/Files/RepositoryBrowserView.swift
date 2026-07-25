@@ -1,5 +1,8 @@
 import AppKit
 import SwiftUI
+#if SWIFT_PACKAGE
+import WorkbenchCore
+#endif
 
 struct RepositoryBrowserView: View {
     let workspace: Workspace?

@@ -1,5 +1,8 @@
 import SwiftData
 import SwiftUI
+#if SWIFT_PACKAGE
+import WorkbenchCore
+#endif
 
 struct SessionsView: View {
     @Bindable var model: AppModel

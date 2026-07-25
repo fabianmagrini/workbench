@@ -32,6 +32,10 @@ The test target uses Swift Testing and covers:
 All persistence tests use `ModelConfiguration(isStoredInMemoryOnly: true)` and
 do not affect the user's local Workbench database.
 
+The tests import `WorkbenchCore`, `WorkbenchAgents`, and `WorkbenchUI`
+independently. Accidental dependency leakage or missing public API surface
+therefore fails at compile time.
+
 ## Manual launch smoke test
 
 After automated tests pass:

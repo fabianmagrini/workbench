@@ -1,5 +1,8 @@
 import SwiftData
 import SwiftUI
+#if SWIFT_PACKAGE
+import WorkbenchCore
+#endif
 
 struct TaskListView: View {
     @Bindable var model: AppModel

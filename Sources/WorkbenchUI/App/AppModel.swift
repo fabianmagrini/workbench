@@ -1,6 +1,10 @@
 import Foundation
 import Observation
 import SwiftData
+#if SWIFT_PACKAGE
+import WorkbenchAgents
+import WorkbenchCore
+#endif
 
 @MainActor
 @Observable

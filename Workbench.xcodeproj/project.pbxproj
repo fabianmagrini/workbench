@@ -17,8 +17,11 @@
 		100000000000000000000008 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000008 /* SettingsView.swift */; };
 		100000000000000000000009 /* TaskViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000009 /* TaskViews.swift */; };
 		10000000000000000000000A /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000A /* Models.swift */; };
-		10000000000000000000000B /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000B /* Services.swift */; };
+		10000000000000000000000B /* GitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000B /* GitService.swift */; };
 		10000000000000000000000C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000C /* Assets.xcassets */; };
+		10000000000000000000000D /* AgentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000E /* AgentProvider.swift */; };
+		10000000000000000000000E /* WorkbenchCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000F /* WorkbenchCommands.swift */; };
+		10000000000000000000000F /* DomainStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000010 /* DomainStyles.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,9 +35,12 @@
 		200000000000000000000008 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		200000000000000000000009 /* TaskViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskViews.swift; sourceTree = "<group>"; };
 		20000000000000000000000A /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		20000000000000000000000B /* Services.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
+		20000000000000000000000B /* GitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitService.swift; sourceTree = "<group>"; };
 		20000000000000000000000C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		20000000000000000000000D /* Workbench.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Workbench.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		20000000000000000000000E /* AgentProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentProvider.swift; sourceTree = "<group>"; };
+		20000000000000000000000F /* WorkbenchCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkbenchCommands.swift; sourceTree = "<group>"; };
+		200000000000000000000010 /* DomainStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainStyles.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,21 +67,22 @@
 			isa = PBXGroup;
 			children = (
 				400000000000000000000003 /* App */,
+				400000000000000000000010 /* UI App */,
 				400000000000000000000004 /* Features */,
 				40000000000000000000000B /* Models */,
 				40000000000000000000000C /* Services */,
+				400000000000000000000011 /* Agents */,
 			);
 			name = Sources;
-			path = Sources/Workbench;
+			path = Sources;
 			sourceTree = SOURCE_ROOT;
 		};
 		400000000000000000000003 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				200000000000000000000001 /* AppModel.swift */,
 				200000000000000000000002 /* WorkbenchApp.swift */,
 			);
-			path = App;
+			path = WorkbenchApp;
 			sourceTree = "<group>";
 		};
 		400000000000000000000004 /* Features */ = {
@@ -89,7 +96,7 @@
 				40000000000000000000000A /* Settings */,
 				40000000000000000000000F /* Tasks */,
 			);
-			path = Features;
+			path = WorkbenchUI/Features;
 			sourceTree = "<group>";
 		};
 		400000000000000000000005 /* Files */ = {
@@ -131,13 +138,13 @@
 		40000000000000000000000B /* Models */ = {
 			isa = PBXGroup;
 			children = (20000000000000000000000A /* Models.swift */,);
-			path = Models;
+			path = WorkbenchCore/Models;
 			sourceTree = "<group>";
 		};
 		40000000000000000000000C /* Services */ = {
 			isa = PBXGroup;
-			children = (20000000000000000000000B /* Services.swift */,);
-			path = Services;
+			children = (20000000000000000000000B /* GitService.swift */,);
+			path = WorkbenchCore/Services;
 			sourceTree = "<group>";
 		};
 		40000000000000000000000D /* Resources */ = {
@@ -156,6 +163,22 @@
 			isa = PBXGroup;
 			children = (200000000000000000000009 /* TaskViews.swift */,);
 			path = Tasks;
+			sourceTree = "<group>";
+		};
+		400000000000000000000010 /* UI App */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000001 /* AppModel.swift */,
+				20000000000000000000000F /* WorkbenchCommands.swift */,
+				200000000000000000000010 /* DomainStyles.swift */,
+			);
+			path = WorkbenchUI/App;
+			sourceTree = "<group>";
+		};
+		400000000000000000000011 /* Agents */ = {
+			isa = PBXGroup;
+			children = (20000000000000000000000E /* AgentProvider.swift */,);
+			path = WorkbenchAgents;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -232,7 +255,10 @@
 				100000000000000000000008 /* SettingsView.swift in Sources */,
 				100000000000000000000009 /* TaskViews.swift in Sources */,
 				10000000000000000000000A /* Models.swift in Sources */,
-				10000000000000000000000B /* Services.swift in Sources */,
+				10000000000000000000000B /* GitService.swift in Sources */,
+				10000000000000000000000D /* AgentProvider.swift in Sources */,
+				10000000000000000000000E /* WorkbenchCommands.swift in Sources */,
+				10000000000000000000000F /* DomainStyles.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

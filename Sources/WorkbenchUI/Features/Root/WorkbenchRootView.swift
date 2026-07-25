@@ -1,12 +1,17 @@
 import SwiftData
 import SwiftUI
+#if SWIFT_PACKAGE
+import WorkbenchCore
+#endif
 
-struct WorkbenchRootView: View {
+public struct WorkbenchRootView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Workspace.updatedAt, order: .reverse) private var workspaces: [Workspace]
     @State private var model = AppModel()
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         HStack(spacing: 0) {
             NavigationSplitView {
                 SidebarView(model: model, workspaces: workspaces)
