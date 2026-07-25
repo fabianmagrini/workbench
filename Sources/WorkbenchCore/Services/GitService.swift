@@ -5,8 +5,24 @@ public protocol GitService: Sendable {
     func changedFiles(at repositoryPath: String) async throws -> [String]
 }
 
+public struct GitCommandError: Error, Sendable, Equatable {
+    public let arguments: [String]
+    public let exitCode: Int32
+    public let standardError: String
+
+    public init(arguments: [String], exitCode: Int32, standardError: String) {
+        self.arguments = arguments
+        self.exitCode = exitCode
+        self.standardError = standardError
+    }
+}
+
 public actor LocalGitService: GitService {
-    public init() {}
+    private let processRunner: any ProcessRunner
+
+    public init(processRunner: any ProcessRunner = LocalProcessRunner()) {
+        self.processRunner = processRunner
+    }
 
     public func branch(at repositoryPath: String) async throws -> String {
         try await runGit(arguments: ["branch", "--show-current"], at: repositoryPath)
@@ -21,18 +37,20 @@ public actor LocalGitService: GitService {
     }
 
     private func runGit(arguments: [String], at path: String) async throws -> String {
-        let process = Process()
-        let output = Pipe()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/git")
-        process.arguments = ["-C", path] + arguments
-        process.standardOutput = output
-        process.standardError = output
-        try process.run()
-        process.waitUntilExit()
-        let data = output.fileHandleForReading.readDataToEndOfFile()
-        guard process.terminationStatus == 0 else {
-            throw CocoaError(.fileReadUnknown)
+        let commandArguments = ["-C", path] + arguments
+        let result = try await processRunner.run(
+            ProcessRequest(
+                executableURL: URL(fileURLWithPath: "/usr/bin/git"),
+                arguments: commandArguments
+            )
+        )
+        guard result.exitCode == 0 else {
+            throw GitCommandError(
+                arguments: commandArguments,
+                exitCode: result.exitCode,
+                standardError: result.standardErrorString
+            )
         }
-        return String(decoding: data, as: UTF8.self)
+        return result.standardOutputString
     }
 }

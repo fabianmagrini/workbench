@@ -28,6 +28,8 @@ The test target uses Swift Testing and covers:
 - streamed log, changed-file, and completion events;
 - task and session cancellation state;
 - duplicate-run prevention in `SessionOrchestrator`;
+- real process stdout, stderr, exit status, working-directory, environment, and
+  cancellation behavior;
 - the preview provider's complete event sequence.
 
 All persistence tests use `ModelConfiguration(isStoredInMemoryOnly: true)` and

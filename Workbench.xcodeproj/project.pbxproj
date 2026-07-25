@@ -23,6 +23,7 @@
 		10000000000000000000000E /* WorkbenchCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000F /* WorkbenchCommands.swift */; };
 		10000000000000000000000F /* DomainStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000010 /* DomainStyles.swift */; };
 		100000000000000000000010 /* SessionOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000011 /* SessionOrchestrator.swift */; };
+		100000000000000000000011 /* ProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000012 /* ProcessRunner.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		20000000000000000000000F /* WorkbenchCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkbenchCommands.swift; sourceTree = "<group>"; };
 		200000000000000000000010 /* DomainStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainStyles.swift; sourceTree = "<group>"; };
 		200000000000000000000011 /* SessionOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionOrchestrator.swift; sourceTree = "<group>"; };
+		200000000000000000000012 /* ProcessRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessRunner.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,7 +147,10 @@
 		};
 		40000000000000000000000C /* Services */ = {
 			isa = PBXGroup;
-			children = (20000000000000000000000B /* GitService.swift */,);
+			children = (
+				20000000000000000000000B /* GitService.swift */,
+				200000000000000000000012 /* ProcessRunner.swift */,
+			);
 			path = WorkbenchCore/Services;
 			sourceTree = "<group>";
 		};
@@ -265,6 +270,7 @@
 				10000000000000000000000E /* WorkbenchCommands.swift in Sources */,
 				10000000000000000000000F /* DomainStyles.swift in Sources */,
 				100000000000000000000010 /* SessionOrchestrator.swift in Sources */,
+				100000000000000000000011 /* ProcessRunner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

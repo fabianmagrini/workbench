@@ -213,6 +213,70 @@ struct AgentProviderTests {
     }
 }
 
+@Suite("Process runner")
+struct ProcessRunnerTests {
+    @Test func capturesStandardOutputAndStandardErrorSeparately() async throws {
+        let runner = LocalProcessRunner()
+        let result = try await runner.run(
+            ProcessRequest(
+                executableURL: URL(fileURLWithPath: "/bin/sh"),
+                arguments: ["-c", "printf output; printf error >&2; exit 7"]
+            )
+        )
+
+        #expect(result.standardOutputString == "output")
+        #expect(result.standardErrorString == "error")
+        #expect(result.exitCode == 7)
+        #expect(result.terminationReason == .exit)
+    }
+
+    @Test func appliesWorkingDirectoryAndEnvironment() async throws {
+        let runner = LocalProcessRunner()
+        let temporaryDirectory = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(
+            at: temporaryDirectory,
+            withIntermediateDirectories: true
+        )
+        defer { try? FileManager.default.removeItem(at: temporaryDirectory) }
+
+        let result = try await runner.run(
+            ProcessRequest(
+                executableURL: URL(fileURLWithPath: "/bin/sh"),
+                arguments: ["-c", "printf '%s|%s' \"$PWD\" \"$WORKBENCH_TEST_VALUE\""],
+                currentDirectoryURL: temporaryDirectory,
+                environment: ["WORKBENCH_TEST_VALUE": "configured"]
+            )
+        )
+
+        #expect(
+            result.standardOutputString.hasSuffix(
+                "/\(temporaryDirectory.lastPathComponent)|configured"
+            )
+        )
+        #expect(result.exitCode == 0)
+    }
+
+    @Test func cancellationTerminatesTheChildProcess() async throws {
+        let runner = LocalProcessRunner()
+        let execution = Task {
+            try await runner.run(
+                ProcessRequest(
+                    executableURL: URL(fileURLWithPath: "/bin/sleep"),
+                    arguments: ["30"]
+                )
+            )
+        }
+
+        try await Task.sleep(for: .milliseconds(50))
+        execution.cancel()
+        let result = try await execution.value
+
+        #expect(result.terminationReason == .uncaughtSignal)
+        #expect(result.exitCode != 0)
+    }
+}
+
 private enum TestStore {
     @MainActor
     static func makeContainer() throws -> ModelContainer {

@@ -13,8 +13,9 @@ target over the same source tree.
 
 ## Module boundaries
 
-- `WorkbenchCore` owns SwiftData models, domain enums, and repository services.
-  It has no dependency on UI or agent implementations.
+- `WorkbenchCore` owns SwiftData models, domain enums, repository services, and
+  reusable local process execution. It has no dependency on UI or agent
+  implementations.
 - `WorkbenchAgents` owns the `AgentProvider` contract, sendable event values,
   and concrete providers. It depends only on `WorkbenchCore`.
 - `WorkbenchUI` owns application orchestration, commands, styling, and SwiftUI
@@ -79,14 +80,17 @@ Every integration conforms to `AgentProvider`, a `Sendable` protocol:
 
 `PreviewAgentProvider` is deterministic local scaffolding. A real CLI
 integration should add a new actor conforming to `AgentProvider` and translate
-process output into the existing event types.
+process output into the existing event types. `LocalProcessRunner` is the
+shared execution boundary for those integrations: it captures stdout and
+stderr independently, supports working-directory and environment configuration,
+and terminates child processes when their calling task is cancelled.
 
 ## Concurrency boundaries
 
 - `AppModel` is `@MainActor` because it mutates UI and SwiftData state.
 - `SessionOrchestrator` is `@MainActor` because it reduces agent events into
   SwiftData models and owns cancellable execution jobs.
-- Agent and Git services are actors.
+- Agent, Git, and local process services are actors.
 - Task snapshots and events are `Sendable` values crossing actor boundaries.
 - One `Swift.Task` is retained per running Workbench task, enabling
   cancellation and preventing duplicate launches.
