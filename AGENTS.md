@@ -71,7 +71,7 @@ xcodebuild test -project Workbench.xcodeproj -scheme Workbench \
 git diff --check
 ```
 
-Current expected coverage is 15 Swift Testing tests across five suites and two
+Current expected coverage is 18 Swift Testing tests across six suites and two
 macOS UI tests. Update `docs/TESTING.md` when those totals or commands change.
 
 UI tests require an interactive macOS login session. They launch with

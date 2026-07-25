@@ -11,7 +11,7 @@ xcodebuild test -project Workbench.xcodeproj -scheme Workbench \
   -destination 'platform=macOS'
 ```
 
-The current expected totals are 15 Swift Testing tests across five suites and
+The current expected totals are 18 Swift Testing tests across six suites and
 two XCTest UI tests. A change to either total should be reflected in this file
 so unexpectedly undiscovered tests are noticeable.
 
@@ -30,7 +30,9 @@ The test target uses Swift Testing and covers:
 - stable task-status and priority definitions;
 - in-memory SwiftData persistence and relationships;
 - idempotent first-run seeding;
-- task creation and selection;
+- task persistence, creation, and selection;
+- new-task form validation and input normalization;
+- repository browser loading, preview selection, and error state;
 - streamed log, changed-file, and completion events;
 - task and session cancellation state;
 - duplicate-run prevention in `SessionOrchestrator`;

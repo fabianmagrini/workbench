@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		100000000000000000000001 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000001 /* AppModel.swift */; };
+		100000000000000000000001 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000001 /* AppViewModel.swift */; };
 		100000000000000000000002 /* WorkbenchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000002 /* WorkbenchApp.swift */; };
 		100000000000000000000003 /* RepositoryBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000003 /* RepositoryBrowserView.swift */; };
 		100000000000000000000004 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000004 /* HistoryView.swift */; };
@@ -26,6 +26,11 @@
 		100000000000000000000011 /* ProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000012 /* ProcessRunner.swift */; };
 		100000000000000000000012 /* CodexCLIProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000013 /* CodexCLIProvider.swift */; };
 		100000000000000000000013 /* WorkbenchUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000015 /* WorkbenchUITests.swift */; };
+		100000000000000000000014 /* TaskRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000016 /* TaskRepository.swift */; };
+		100000000000000000000015 /* AppSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000017 /* AppSeeder.swift */; };
+		100000000000000000000016 /* RepositoryFileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000018 /* RepositoryFileService.swift */; };
+		100000000000000000000017 /* RepositoryBrowserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000019 /* RepositoryBrowserViewModel.swift */; };
+		100000000000000000000018 /* NewTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001A /* NewTaskViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +44,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		200000000000000000000001 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		200000000000000000000001 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
 		200000000000000000000002 /* WorkbenchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkbenchApp.swift; sourceTree = "<group>"; };
 		200000000000000000000003 /* RepositoryBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryBrowserView.swift; sourceTree = "<group>"; };
 		200000000000000000000004 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
@@ -60,6 +65,11 @@
 		200000000000000000000013 /* CodexCLIProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodexCLIProvider.swift; sourceTree = "<group>"; };
 		200000000000000000000014 /* WorkbenchUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WorkbenchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		200000000000000000000015 /* WorkbenchUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkbenchUITests.swift; sourceTree = "<group>"; };
+		200000000000000000000016 /* TaskRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRepository.swift; sourceTree = "<group>"; };
+		200000000000000000000017 /* AppSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSeeder.swift; sourceTree = "<group>"; };
+		200000000000000000000018 /* RepositoryFileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryFileService.swift; sourceTree = "<group>"; };
+		200000000000000000000019 /* RepositoryBrowserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryBrowserViewModel.swift; sourceTree = "<group>"; };
+		20000000000000000000001A /* NewTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,7 +138,10 @@
 		};
 		400000000000000000000005 /* Files */ = {
 			isa = PBXGroup;
-			children = (200000000000000000000003 /* RepositoryBrowserView.swift */,);
+			children = (
+				200000000000000000000003 /* RepositoryBrowserView.swift */,
+				200000000000000000000019 /* RepositoryBrowserViewModel.swift */,
+			);
 			path = Files;
 			sourceTree = "<group>";
 		};
@@ -173,6 +186,8 @@
 			children = (
 				20000000000000000000000B /* GitService.swift */,
 				200000000000000000000012 /* ProcessRunner.swift */,
+				200000000000000000000018 /* RepositoryFileService.swift */,
+				200000000000000000000016 /* TaskRepository.swift */,
 			);
 			path = WorkbenchCore/Services;
 			sourceTree = "<group>";
@@ -194,14 +209,18 @@
 		};
 		40000000000000000000000F /* Tasks */ = {
 			isa = PBXGroup;
-			children = (200000000000000000000009 /* TaskViews.swift */,);
+			children = (
+				20000000000000000000001A /* NewTaskViewModel.swift */,
+				200000000000000000000009 /* TaskViews.swift */,
+			);
 			path = Tasks;
 			sourceTree = "<group>";
 		};
 		400000000000000000000010 /* UI App */ = {
 			isa = PBXGroup;
 			children = (
-				200000000000000000000001 /* AppModel.swift */,
+				200000000000000000000017 /* AppSeeder.swift */,
+				200000000000000000000001 /* AppViewModel.swift */,
 				20000000000000000000000F /* WorkbenchCommands.swift */,
 				200000000000000000000010 /* DomainStyles.swift */,
 			);
@@ -323,7 +342,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				100000000000000000000001 /* AppModel.swift in Sources */,
+				100000000000000000000001 /* AppViewModel.swift in Sources */,
 				100000000000000000000002 /* WorkbenchApp.swift in Sources */,
 				100000000000000000000003 /* RepositoryBrowserView.swift in Sources */,
 				100000000000000000000004 /* HistoryView.swift in Sources */,
@@ -340,6 +359,11 @@
 				100000000000000000000010 /* SessionOrchestrator.swift in Sources */,
 				100000000000000000000011 /* ProcessRunner.swift in Sources */,
 				100000000000000000000012 /* CodexCLIProvider.swift in Sources */,
+				100000000000000000000014 /* TaskRepository.swift in Sources */,
+				100000000000000000000015 /* AppSeeder.swift in Sources */,
+				100000000000000000000016 /* RepositoryFileService.swift in Sources */,
+				100000000000000000000017 /* RepositoryBrowserViewModel.swift in Sources */,
+				100000000000000000000018 /* NewTaskViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

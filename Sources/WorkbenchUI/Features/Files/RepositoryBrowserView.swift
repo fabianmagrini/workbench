@@ -1,4 +1,3 @@
-import AppKit
 import SwiftUI
 #if SWIFT_PACKAGE
 import WorkbenchCore
@@ -6,36 +5,40 @@ import WorkbenchCore
 
 struct RepositoryBrowserView: View {
     let workspace: Workspace?
-    @State private var entries: [RepositoryEntry] = []
-    @State private var selectedEntry: RepositoryEntry?
-    @State private var errorMessage: String?
+    @Bindable var viewModel: RepositoryBrowserViewModel
 
     var body: some View {
         Group {
             if let workspace {
                 HSplitView {
-                    List(entries, selection: $selectedEntry) { entry in
+                    List(viewModel.entries, selection: $viewModel.selectedEntry) { entry in
                         Label(entry.name, systemImage: entry.isDirectory ? "folder" : "doc")
                             .tag(entry)
                     }
                     .frame(minWidth: 240)
 
-                    if let selectedEntry {
-                        FilePreview(entry: selectedEntry)
+                    if let selectedEntry = viewModel.selectedEntry {
+                        FilePreview(
+                            entry: selectedEntry,
+                            contents: viewModel.previewContents
+                        )
                     } else {
                         ContentUnavailableView("Select a File", systemImage: "doc.text.magnifyingglass")
                     }
                 }
-                .task(id: workspace.repositoryPath) { loadEntries(at: workspace.repositoryPath) }
+                .task(id: workspace.repositoryPath) {
+                    await viewModel.load(repositoryPath: workspace.repositoryPath)
+                }
+                .task(id: viewModel.selectedEntry) {
+                    await viewModel.loadPreview()
+                }
                 .toolbar {
                     ToolbarItemGroup {
                         Button("Reveal in Finder", systemImage: "finder") {
-                            NSWorkspace.shared.activateFileViewerSelecting([
-                                URL(fileURLWithPath: workspace.repositoryPath)
-                            ])
+                            viewModel.reveal(repositoryPath: workspace.repositoryPath)
                         }
                         Button("Open in Terminal", systemImage: "terminal") {
-                            NSWorkspace.shared.open(URL(fileURLWithPath: workspace.repositoryPath))
+                            viewModel.openInTerminal(repositoryPath: workspace.repositoryPath)
                         }
                     }
                 }
@@ -44,44 +47,23 @@ struct RepositoryBrowserView: View {
             }
         }
         .navigationTitle("Files")
-        .alert("Unable to Read Repository", isPresented: .constant(errorMessage != nil)) {
-            Button("OK") { errorMessage = nil }
-        } message: {
-            Text(errorMessage ?? "")
-        }
-    }
-
-    private func loadEntries(at path: String) {
-        do {
-            let urls = try FileManager.default.contentsOfDirectory(
-                at: URL(fileURLWithPath: path),
-                includingPropertiesForKeys: [.isDirectoryKey],
-                options: [.skipsHiddenFiles]
+        .alert(
+            "Unable to Read Repository",
+            isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
             )
-            entries = try urls.map { url in
-                let values = try url.resourceValues(forKeys: [.isDirectoryKey])
-                return RepositoryEntry(url: url, isDirectory: values.isDirectory ?? false)
-            }
-            .sorted {
-                if $0.isDirectory != $1.isDirectory { return $0.isDirectory }
-                return $0.name.localizedStandardCompare($1.name) == .orderedAscending
-            }
-        } catch {
-            errorMessage = error.localizedDescription
+        ) {
+            Button("OK") { viewModel.errorMessage = nil }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
         }
     }
-}
-
-private struct RepositoryEntry: Identifiable, Hashable {
-    let url: URL
-    let isDirectory: Bool
-    var id: URL { url }
-    var name: String { url.lastPathComponent }
 }
 
 private struct FilePreview: View {
     let entry: RepositoryEntry
-    @State private var contents = ""
+    let contents: String
 
     var body: some View {
         if entry.isDirectory {
@@ -93,10 +75,6 @@ private struct FilePreview: View {
                     .textSelection(.enabled)
                     .frame(maxWidth: .infinity, alignment: .topLeading)
                     .padding()
-            }
-            .task(id: entry.id) {
-                contents = (try? String(contentsOf: entry.url, encoding: .utf8))
-                    ?? "Preview unavailable for this file."
             }
         }
     }

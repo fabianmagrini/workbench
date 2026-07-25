@@ -53,7 +53,8 @@ xcodebuild test -project Workbench.xcodeproj -scheme Workbench \
   -destination 'platform=macOS'
 ```
 
-`swift test` runs the 15 domain, orchestration, process, and provider tests.
+`swift test` runs the 18 domain, view-model, orchestration, process, and provider
+tests.
 The Xcode test command builds, launches, and drives the two macOS UI tests.
 Those tests use an in-memory database and deterministic preview provider; they
 do not modify the user's Workbench data or start an authenticated Codex task.

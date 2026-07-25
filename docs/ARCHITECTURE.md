@@ -39,22 +39,28 @@ and tests.
 ```text
 WorkbenchApp
   ├─ ModelContainer (SwiftData)
-  ├─ WorkbenchUI.WorkbenchRootView
-  │    ├─ Sidebar
-  │    ├─ Workspace content
-  │    ├─ Task detail / live console
-  │    └─ Inline inspector
-  └─ AppModel (@MainActor)
-       └─ SessionOrchestrator (@MainActor)
-            ├─ AgentProvider
-            └─ SwiftData ModelContext
+  ├─ AppSeeder / TaskRepository
+  ├─ SessionOrchestrator → AgentProvider
+  ├─ RepositoryFileService
+  └─ AppViewModel (@MainActor)
+       ├─ RepositoryBrowserViewModel
+       └─ WorkbenchRootView
+            ├─ Sidebar and workspace content
+            ├─ Task detail / live console
+            └─ Inline inspector
 ```
 
-`WorkbenchApp` owns the shared SwiftData container. `AppModel` owns transient
-selection and presentation state. `SessionOrchestrator` owns execution jobs,
-consumes asynchronous agent events, and applies lifecycle changes to persistent
-task and session models. Views remain declarative and receive either `AppModel`
-or a specific persistent model.
+`WorkbenchApp` is the composition root. It owns the shared SwiftData container
+and injects services into `AppViewModel`. The application view model owns
+navigation, selection, presentation, and search state; feature view models own
+forms and asynchronous feature state. `AppSeeder`, `TaskRepository`,
+`SessionOrchestrator`, and `RepositoryFileService` isolate persistence,
+execution, and filesystem side effects.
+
+Workbench uses pragmatic, feature-scoped MVVM. Views may observe SwiftData
+models directly for simple projections, while non-trivial state transitions and
+side effects live in view models or services. This avoids duplicating durable
+model state in view models while keeping views declarative and testable.
 
 ## Data model
 
@@ -72,7 +78,7 @@ sessions, and logs. SwiftData is the source of truth for durable state.
 
 Every integration conforms to `AgentProvider`, a `Sendable` protocol:
 
-1. `AppModel` delegates the selected task to `SessionOrchestrator`.
+1. `AppViewModel` delegates the selected task to `SessionOrchestrator`.
 2. `SessionOrchestrator` creates an immutable `TaskSnapshot`.
 3. The provider returns an `AsyncThrowingStream<AgentEvent, Error>`.
 4. The orchestrator consumes the stream on the main actor.
@@ -102,10 +108,11 @@ not yet route execution to a different provider.
 
 ## Concurrency boundaries
 
-- `AppModel` is `@MainActor` because it mutates UI and SwiftData state.
+- `AppViewModel`, `NewTaskViewModel`, and
+  `RepositoryBrowserViewModel` are `@MainActor` because they expose UI state.
 - `SessionOrchestrator` is `@MainActor` because it reduces agent events into
   SwiftData models and owns cancellable execution jobs.
-- Agent, Git, and local process services are actors.
+- Repository file access, agents, Git, and local process services are actors.
 - Task snapshots and events are `Sendable` values crossing actor boundaries.
 - One `Swift.Task` is retained per running Workbench task, enabling
   cancellation and preventing duplicate launches.

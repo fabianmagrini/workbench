@@ -5,7 +5,7 @@ import WorkbenchCore
 #endif
 
 struct TaskListView: View {
-    @Bindable var model: AppModel
+    @Bindable var model: AppViewModel
     @Query(sort: \WorkbenchTask.updatedAt, order: .reverse) private var allTasks: [WorkbenchTask]
 
     private var tasks: [WorkbenchTask] {
@@ -110,8 +110,7 @@ private struct TaskRow: View {
 }
 
 struct TaskDetailView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Bindable var model: AppModel
+    @Bindable var model: AppViewModel
 
     var body: some View {
         if let task = model.selectedTask {
@@ -125,11 +124,11 @@ struct TaskDetailView: View {
                 ToolbarItemGroup {
                     if task.status == .running {
                         Button("Cancel", systemImage: "stop.fill") {
-                            model.cancelSelectedTask(context: modelContext)
+                            model.cancelSelectedTask()
                         }
                     } else {
                         Button("Run", systemImage: "play.fill") {
-                            model.runSelectedTask(context: modelContext)
+                            model.runSelectedTask()
                         }
                         .accessibilityIdentifier("task.detail.run")
                     }
@@ -302,38 +301,37 @@ private struct ChangedFilesView: View {
 
 struct NewTaskView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @Bindable var model: AppModel
-
-    @State private var title = ""
-    @State private var prompt = ""
-    @State private var agent = "Codex"
-    @State private var priority: TaskPriority = .medium
+    @Bindable var model: AppViewModel
+    @State private var viewModel = NewTaskViewModel()
 
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Title", text: $title, prompt: Text("Implement JWT refresh flow"))
+                TextField(
+                    "Title",
+                    text: $viewModel.title,
+                    prompt: Text("Implement JWT refresh flow")
+                )
                     .accessibilityIdentifier("task.new.title")
 
-                Picker("Agent", selection: $agent) {
-                    ForEach(["Codex", "Claude Code", "Amp", "Gemini CLI"], id: \.self) {
+                Picker("Agent", selection: $viewModel.agent) {
+                    ForEach(viewModel.agents, id: \.self) {
                         Text($0)
                     }
                 }
 
-                Picker("Priority", selection: $priority) {
+                Picker("Priority", selection: $viewModel.priority) {
                     ForEach(TaskPriority.allCases) { priority in
                         Text(priority.rawValue).tag(priority)
                     }
                 }
 
-                TextEditor(text: $prompt)
+                TextEditor(text: $viewModel.prompt)
                     .accessibilityIdentifier("task.new.prompt")
                     .font(.body.monospaced())
                     .frame(minHeight: 180)
                     .overlay(alignment: .topLeading) {
-                        if prompt.isEmpty {
+                        if viewModel.prompt.isEmpty {
                             Text("Describe the work you want the agent to perform…")
                                 .foregroundStyle(.tertiary)
                                 .padding(.top, 8)
@@ -350,17 +348,11 @@ struct NewTaskView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Create") {
-                        model.createTask(
-                            title: title.trimmingCharacters(in: .whitespacesAndNewlines),
-                            prompt: prompt.trimmingCharacters(in: .whitespacesAndNewlines),
-                            agent: agent,
-                            priority: priority,
-                            context: modelContext
-                        )
+                        model.createTask(viewModel.input)
                         dismiss()
                     }
                     .accessibilityIdentifier("task.new.create")
-                    .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || prompt.isEmpty)
+                    .disabled(!viewModel.canCreate)
                 }
             }
         }

@@ -1,21 +1,15 @@
 import SwiftData
 import SwiftUI
 #if SWIFT_PACKAGE
-import WorkbenchAgents
 import WorkbenchCore
 #endif
 
 public struct WorkbenchRootView: View {
-    @Environment(\.modelContext) private var modelContext
     @Query(sort: \Workspace.updatedAt, order: .reverse) private var workspaces: [Workspace]
-    @State private var model: AppModel
+    @State private var model: AppViewModel
 
-    public init() {
-        let isUITesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
-        let provider: any AgentProvider = isUITesting
-            ? PreviewAgentProvider()
-            : CodexCLIProvider()
-        _model = State(initialValue: AppModel(agentProvider: provider))
+    public init(viewModel: AppViewModel) {
+        _model = State(initialValue: viewModel)
     }
 
     public var body: some View {
@@ -50,7 +44,7 @@ public struct WorkbenchRootView: View {
                 }
 
                 Button {
-                    model.runSelectedTask(context: modelContext)
+                    model.runSelectedTask()
                 } label: {
                     Label("Run", systemImage: "play.fill")
                 }
@@ -74,26 +68,26 @@ public struct WorkbenchRootView: View {
             model.showsNewTask = true
         }
         .focusedSceneValue(\.runTaskAction) {
-            model.runSelectedTask(context: modelContext)
+            model.runSelectedTask()
         }
         .focusedSceneValue(\.cancelTaskAction) {
-            model.cancelSelectedTask(context: modelContext)
+            model.cancelSelectedTask()
         }
         .task {
-            model.seedIfNeeded(context: modelContext, workspaces: workspaces)
+            model.seedIfNeeded(workspaces: workspaces)
         }
         .accessibilityIdentifier("workbench.root")
     }
 }
 
 private struct SidebarView: View {
-    @Bindable var model: AppModel
+    @Bindable var model: AppViewModel
     let workspaces: [Workspace]
 
     var body: some View {
         List(selection: $model.sidebarSelection) {
             Section {
-                ForEach(AppModel.SidebarSelection.allCases) { item in
+                ForEach(AppViewModel.SidebarSelection.allCases) { item in
                     Label(item.rawValue, systemImage: item.systemImage)
                         .tag(item)
                 }
@@ -167,7 +161,7 @@ private struct WorkspaceRow: View {
 }
 
 private struct ContentView: View {
-    @Bindable var model: AppModel
+    @Bindable var model: AppViewModel
 
     var body: some View {
         Group {
@@ -177,7 +171,10 @@ private struct ContentView: View {
             case .sessions:
                 SessionsView(model: model)
             case .files:
-                RepositoryBrowserView(workspace: model.selectedWorkspace)
+                RepositoryBrowserView(
+                    workspace: model.selectedWorkspace,
+                    viewModel: model.repositoryBrowserViewModel
+                )
             case .history:
                 HistoryView(model: model)
             }

@@ -5,7 +5,7 @@ import WorkbenchCore
 #endif
 
 struct SessionsView: View {
-    @Bindable var model: AppModel
+    @Bindable var model: AppViewModel
     @Query(sort: \AgentSession.startedAt, order: .reverse) private var sessions: [AgentSession]
 
     private var workspaceSessions: [AgentSession] {

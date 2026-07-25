@@ -5,7 +5,7 @@ import WorkbenchCore
 #endif
 
 struct HistoryView: View {
-    @Bindable var model: AppModel
+    @Bindable var model: AppViewModel
     @Query(sort: \AgentSession.startedAt, order: .reverse) private var sessions: [AgentSession]
 
     private var groupedSessions: [(Date, [AgentSession])] {

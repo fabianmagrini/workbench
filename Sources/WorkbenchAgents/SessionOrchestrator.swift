@@ -7,14 +7,16 @@ import WorkbenchCore
 @MainActor
 public final class SessionOrchestrator {
     private let agentProvider: any AgentProvider
+    private let context: ModelContext
     private var runningJobs: [UUID: Swift.Task<Void, Never>] = [:]
 
-    public init(agentProvider: any AgentProvider) {
+    public init(agentProvider: any AgentProvider, context: ModelContext) {
         self.agentProvider = agentProvider
+        self.context = context
     }
 
     @discardableResult
-    public func run(task: WorkbenchTask, context: ModelContext) -> AgentSession? {
+    public func run(task: WorkbenchTask) -> AgentSession? {
         guard
             let workspace = task.workspace,
             runningJobs[task.id] == nil
@@ -57,7 +59,7 @@ public final class SessionOrchestrator {
         return session
     }
 
-    public func cancel(task: WorkbenchTask, context: ModelContext) {
+    public func cancel(task: WorkbenchTask) {
         runningJobs[task.id]?.cancel()
         runningJobs[task.id] = nil
         task.status = .cancelled

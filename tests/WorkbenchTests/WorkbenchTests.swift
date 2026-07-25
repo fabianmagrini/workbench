@@ -46,16 +46,16 @@ struct DomainModelTests {
     }
 }
 
-@Suite("Application model")
-struct AppModelTests {
+@Suite("Application view model")
+struct AppViewModelTests {
     @Test @MainActor func seedIsIdempotent() throws {
         let container = try TestStore.makeContainer()
         let context = container.mainContext
-        let model = AppModel(agentProvider: ImmediateAgentProvider())
+        let model = makeAppViewModel(context: context)
 
-        model.seedIfNeeded(context: context, workspaces: [])
+        model.seedIfNeeded(workspaces: [])
         let firstWorkspaces = try context.fetch(FetchDescriptor<Workspace>())
-        model.seedIfNeeded(context: context, workspaces: firstWorkspaces)
+        model.seedIfNeeded(workspaces: firstWorkspaces)
 
         #expect(try context.fetchCount(FetchDescriptor<Workspace>()) == 1)
         #expect(try context.fetchCount(FetchDescriptor<WorkbenchTask>()) == 4)
@@ -69,14 +69,15 @@ struct AppModelTests {
         let workspace = Workspace(name: "Workbench", repositoryPath: "/tmp/workbench")
         context.insert(workspace)
 
-        let model = AppModel(agentProvider: ImmediateAgentProvider())
+        let model = makeAppViewModel(context: context)
         model.selectedWorkspace = workspace
         model.createTask(
-            title: "Add approvals",
-            prompt: "Implement the approval workflow",
-            agent: "Codex",
-            priority: .high,
-            context: context
+            NewTaskInput(
+                title: "Add approvals",
+                prompt: "Implement the approval workflow",
+                agent: "Codex",
+                priority: .high
+            )
         )
 
         let tasks = try context.fetch(FetchDescriptor<WorkbenchTask>())
@@ -101,10 +102,10 @@ struct AppModelTests {
         context.insert(workspace)
         context.insert(task)
 
-        let model = AppModel(agentProvider: ImmediateAgentProvider())
+        let model = makeAppViewModel(context: context)
         model.selectedWorkspace = workspace
         model.selectedTask = task
-        model.runSelectedTask(context: context)
+        model.runSelectedTask()
 
         try await eventually { task.status == .completed }
 
@@ -130,14 +131,14 @@ struct AppModelTests {
         context.insert(task)
 
         let provider = SuspendedAgentProvider()
-        let model = AppModel(agentProvider: provider)
+        let model = makeAppViewModel(context: context, provider: provider)
         model.selectedWorkspace = workspace
         model.selectedTask = task
-        model.runSelectedTask(context: context)
+        model.runSelectedTask()
         #expect(task.status == .running)
 
         let taskID = task.id
-        model.cancelSelectedTask(context: context)
+        model.cancelSelectedTask()
         try await eventually { await provider.wasCancelled(taskID) }
 
         #expect(task.status == .cancelled)
@@ -164,18 +165,68 @@ struct SessionOrchestratorTests {
         context.insert(task)
 
         let provider = SuspendedAgentProvider()
-        let orchestrator = SessionOrchestrator(agentProvider: provider)
-        let firstSession = orchestrator.run(task: task, context: context)
-        let duplicateSession = orchestrator.run(task: task, context: context)
+        let orchestrator = SessionOrchestrator(agentProvider: provider, context: context)
+        let firstSession = orchestrator.run(task: task)
+        let duplicateSession = orchestrator.run(task: task)
 
         #expect(firstSession != nil)
         #expect(duplicateSession == nil)
         #expect(orchestrator.isRunning(taskID: task.id))
         #expect(task.sessions.count == 1)
 
-        orchestrator.cancel(task: task, context: context)
+        orchestrator.cancel(task: task)
         try await eventually { await provider.wasCancelled(task.id) }
         #expect(!orchestrator.isRunning(taskID: task.id))
+    }
+}
+
+@Suite("Feature view models")
+struct FeatureViewModelTests {
+    @Test @MainActor func newTaskValidationNormalizesInput() {
+        let viewModel = NewTaskViewModel()
+        #expect(!viewModel.canCreate)
+
+        viewModel.title = "  Add approvals  "
+        viewModel.prompt = "\nImplement approval handling. \n"
+        viewModel.priority = .high
+
+        #expect(viewModel.canCreate)
+        #expect(viewModel.input.title == "Add approvals")
+        #expect(viewModel.input.prompt == "Implement approval handling.")
+        #expect(viewModel.input.priority == .high)
+    }
+
+    @Test @MainActor func repositoryBrowserLoadsEntriesAndPreview() async {
+        let fileURL = URL(fileURLWithPath: "/tmp/workbench/README.md")
+        let directoryURL = URL(fileURLWithPath: "/tmp/workbench/Sources")
+        let service = StubRepositoryFileService(
+            entries: [
+                RepositoryEntry(url: directoryURL, isDirectory: true),
+                RepositoryEntry(url: fileURL, isDirectory: false)
+            ],
+            contents: "# Workbench"
+        )
+        let viewModel = RepositoryBrowserViewModel(fileService: service)
+
+        await viewModel.load(repositoryPath: "/tmp/workbench")
+        viewModel.selectedEntry = viewModel.entries.last
+        await viewModel.loadPreview()
+
+        #expect(viewModel.entries.count == 2)
+        #expect(viewModel.previewContents == "# Workbench")
+        #expect(viewModel.errorMessage == nil)
+    }
+
+    @Test @MainActor func repositoryBrowserSurfacesLoadingFailure() async {
+        let viewModel = RepositoryBrowserViewModel(
+            fileService: StubRepositoryFileService(error: TestError.expected)
+        )
+
+        await viewModel.load(repositoryPath: "/missing")
+
+        #expect(viewModel.entries.isEmpty)
+        #expect(viewModel.errorMessage != nil)
+        #expect(!viewModel.isLoading)
     }
 }
 
@@ -393,6 +444,21 @@ private enum TestStore {
     }
 }
 
+@MainActor
+private func makeAppViewModel(
+    context: ModelContext,
+    provider: any AgentProvider = ImmediateAgentProvider()
+) -> AppViewModel {
+    AppViewModel(
+        seeder: AppSeeder(context: context, repositoryPath: "/tmp/workbench"),
+        taskRepository: TaskRepository(context: context),
+        sessionOrchestrator: SessionOrchestrator(
+            agentProvider: provider,
+            context: context
+        )
+    )
+}
+
 private actor ImmediateAgentProvider: AgentProvider {
     let id = "immediate"
     let name = "Immediate"
@@ -462,6 +528,37 @@ private actor SuspendedProcessRunner: ProcessRunner {
 
     private func recordCancellation() {
         wasCancelled = true
+    }
+}
+
+private enum TestError: Error {
+    case expected
+}
+
+private actor StubRepositoryFileService: RepositoryFileServing {
+    let entriesResult: Result<[RepositoryEntry], Error>
+    let contentsResult: Result<String, Error>
+
+    init(
+        entries: [RepositoryEntry] = [],
+        contents: String = "",
+        error: Error? = nil
+    ) {
+        if let error {
+            entriesResult = .failure(error)
+            contentsResult = .failure(error)
+        } else {
+            entriesResult = .success(entries)
+            contentsResult = .success(contents)
+        }
+    }
+
+    func entries(at repositoryURL: URL) async throws -> [RepositoryEntry] {
+        try entriesResult.get()
+    }
+
+    func contents(of entry: RepositoryEntry) async throws -> String {
+        try contentsResult.get()
     }
 }
 

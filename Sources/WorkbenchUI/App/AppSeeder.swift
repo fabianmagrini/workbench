@@ -1,58 +1,30 @@
 import Foundation
-import Observation
 import SwiftData
 #if SWIFT_PACKAGE
-import WorkbenchAgents
 import WorkbenchCore
 #endif
 
 @MainActor
-@Observable
-final class AppModel {
-    enum SidebarSelection: String, CaseIterable, Identifiable {
-        case tasks = "Tasks"
-        case sessions = "Sessions"
-        case files = "Files"
-        case history = "History"
+public final class AppSeeder {
+    private let context: ModelContext
+    private let repositoryPath: String
 
-        var id: Self { self }
-
-        var systemImage: String {
-            switch self {
-            case .tasks: "checklist"
-            case .sessions: "bolt.horizontal.circle"
-            case .files: "folder"
-            case .history: "clock.arrow.circlepath"
-            }
-        }
+    public init(
+        context: ModelContext,
+        repositoryPath: String = FileManager.default.currentDirectoryPath
+    ) {
+        self.context = context
+        self.repositoryPath = repositoryPath
     }
 
-    var sidebarSelection: SidebarSelection = .tasks
-    var selectedWorkspace: Workspace?
-    var selectedTask: WorkbenchTask?
-    var searchText = ""
-    var statusFilter: TaskStatus?
-    var showsNewTask = false
-    var showsInspector = true
-    var consoleSearchText = ""
-
-    private let sessionOrchestrator: SessionOrchestrator
-
-    init(agentProvider: any AgentProvider = CodexCLIProvider()) {
-        sessionOrchestrator = SessionOrchestrator(agentProvider: agentProvider)
-    }
-
-    func seedIfNeeded(context: ModelContext, workspaces: [Workspace]) {
+    public func seedIfNeeded(workspaces: [Workspace]) -> Workspace? {
         guard workspaces.isEmpty else {
-            if selectedWorkspace == nil {
-                selectedWorkspace = workspaces.first
-            }
-            return
+            return workspaces.first
         }
 
         let workspace = Workspace(
             name: "Workbench",
-            repositoryPath: FileManager.default.currentDirectoryPath,
+            repositoryPath: repositoryPath,
             gitBranch: "main",
             preferredAgent: "Codex",
             isFavorite: true,
@@ -109,9 +81,9 @@ final class AppModel {
             agent: "Codex",
             status: .running,
             changedFiles: [
-                "Sources/Workbench/App/WorkbenchApp.swift",
-                "Sources/Workbench/Features/Tasks/TaskDetailView.swift",
-                "Sources/Workbench/Models/Models.swift"
+                "Sources/WorkbenchApp/WorkbenchApp.swift",
+                "Sources/WorkbenchUI/Features/Tasks/TaskViews.swift",
+                "Sources/WorkbenchCore/Models/Models.swift"
             ],
             task: tasks[0]
         )
@@ -124,41 +96,7 @@ final class AppModel {
             LogEntry(level: .success, message: "NavigationSplitView implemented", session: session)
         ].forEach(context.insert)
 
-        selectedWorkspace = workspace
-        selectedTask = tasks[0]
         try? context.save()
-    }
-
-    func createTask(
-        title: String,
-        prompt: String,
-        agent: String,
-        priority: TaskPriority,
-        context: ModelContext
-    ) {
-        guard let workspace = selectedWorkspace else { return }
-        let task = WorkbenchTask(
-            title: title,
-            taskDescription: prompt,
-            prompt: prompt,
-            agent: agent,
-            status: .queued,
-            priority: priority,
-            workspace: workspace
-        )
-        context.insert(task)
-        workspace.updatedAt = .now
-        selectedTask = task
-        try? context.save()
-    }
-
-    func runSelectedTask(context: ModelContext) {
-        guard let selectedTask else { return }
-        sessionOrchestrator.run(task: selectedTask, context: context)
-    }
-
-    func cancelSelectedTask(context: ModelContext) {
-        guard let selectedTask else { return }
-        sessionOrchestrator.cancel(task: selectedTask, context: context)
+        return workspace
     }
 }
