@@ -211,6 +211,108 @@ struct AgentProviderTests {
         #expect(changedFiles.count == 2)
         #expect(exitCode == 0)
     }
+
+    @Test func codexProviderBuildsCommandAndTranslatesJSONLEvents() async throws {
+        let output = """
+        {"type":"thread.started","thread_id":"thread-1"}
+        {"type":"item.completed","item":{"type":"reasoning","text":"Inspecting files"}}
+        {"type":"item.completed","item":{"type":"command_execution","command":"swift test","aggregated_output":"Passed","exit_code":0}}
+        {"type":"item.completed","item":{"type":"file_change","changes":[{"path":"Sources/App.swift","kind":"update"}]}}
+        {"type":"item.completed","item":{"type":"agent_message","text":"Implemented the change"}}
+        """
+        let runner = RecordingProcessRunner(
+            result: ProcessResult(
+                standardOutput: Data(output.utf8),
+                standardError: Data(),
+                exitCode: 0,
+                terminationReason: .exit
+            )
+        )
+        let executableURL = URL(fileURLWithPath: "/test/bin/codex")
+        let provider = CodexCLIProvider(
+            executableURL: executableURL,
+            processRunner: runner
+        )
+        let snapshot = TaskSnapshot(
+            id: UUID(),
+            title: "Implement",
+            prompt: "Make the change",
+            repositoryPath: "/tmp/workbench"
+        )
+
+        let events = try await collect(await provider.execute(task: snapshot))
+        let request = await runner.lastRequest
+
+        #expect(request?.executableURL == executableURL)
+        #expect(request?.currentDirectoryURL?.path == "/tmp/workbench")
+        #expect(request?.arguments == [
+            "exec",
+            "--json",
+            "--color", "never",
+            "--sandbox", "workspace-write",
+            "--cd", "/tmp/workbench",
+            "Make the change"
+        ])
+        #expect(events.containsLog(level: .info, message: "Codex session started"))
+        #expect(events.containsLog(level: .info, message: "Inspecting files"))
+        #expect(events.containsLog(level: .info, message: "$ swift test"))
+        #expect(events.containsLog(level: .success, message: "Implemented the change"))
+        #expect(events.containsChangedFile("Sources/App.swift"))
+        #expect(events.containsFinished(exitCode: 0))
+    }
+
+    @Test func codexProviderSurfacesStandardErrorAndExitCode() async throws {
+        let runner = RecordingProcessRunner(
+            result: ProcessResult(
+                standardOutput: Data(),
+                standardError: Data("Authentication required\n".utf8),
+                exitCode: 9,
+                terminationReason: .exit
+            )
+        )
+        let provider = CodexCLIProvider(
+            executableURL: URL(fileURLWithPath: "/test/bin/codex"),
+            processRunner: runner
+        )
+        let events = try await collect(
+            await provider.execute(
+                task: TaskSnapshot(
+                    id: UUID(),
+                    title: "Fail",
+                    prompt: "Run",
+                    repositoryPath: "/tmp/workbench"
+                )
+            )
+        )
+
+        #expect(events.containsLog(level: .error, message: "Authentication required"))
+        #expect(events.containsFinished(exitCode: 9))
+    }
+
+    @Test func codexProviderPropagatesCancellationToProcessRunner() async throws {
+        let runner = SuspendedProcessRunner()
+        let provider = CodexCLIProvider(
+            executableURL: URL(fileURLWithPath: "/test/bin/codex"),
+            processRunner: runner
+        )
+        let taskID = UUID()
+        let stream = await provider.execute(
+            task: TaskSnapshot(
+                id: taskID,
+                title: "Cancel",
+                prompt: "Wait",
+                repositoryPath: "/tmp/workbench"
+            )
+        )
+        let consumer = Task {
+            for try await _ in stream {}
+        }
+
+        try await eventually { await runner.didStart }
+        await provider.cancel(taskID: taskID)
+        try await eventually { await runner.wasCancelled }
+        _ = try await consumer.value
+    }
 }
 
 @Suite("Process runner")
@@ -322,6 +424,83 @@ private actor SuspendedAgentProvider: AgentProvider {
 
     func wasCancelled(_ taskID: UUID) -> Bool {
         cancelledIDs.contains(taskID)
+    }
+}
+
+private actor RecordingProcessRunner: ProcessRunner {
+    private(set) var lastRequest: ProcessRequest?
+    let result: ProcessResult
+
+    init(result: ProcessResult) {
+        self.result = result
+    }
+
+    func run(_ request: ProcessRequest) async throws -> ProcessResult {
+        lastRequest = request
+        return result
+    }
+}
+
+private actor SuspendedProcessRunner: ProcessRunner {
+    private(set) var didStart = false
+    private(set) var wasCancelled = false
+
+    func run(_ request: ProcessRequest) async throws -> ProcessResult {
+        didStart = true
+        return try await withTaskCancellationHandler {
+            try await Task.sleep(for: .seconds(30))
+            return ProcessResult(
+                standardOutput: Data(),
+                standardError: Data(),
+                exitCode: 0,
+                terminationReason: .exit
+            )
+        } onCancel: {
+            Task { await self.recordCancellation() }
+        }
+    }
+
+    private func recordCancellation() {
+        wasCancelled = true
+    }
+}
+
+private func collect(
+    _ stream: AsyncThrowingStream<AgentEvent, Error>
+) async throws -> [AgentEvent] {
+    var events: [AgentEvent] = []
+    for try await event in stream {
+        events.append(event)
+    }
+    return events
+}
+
+private extension Array where Element == AgentEvent {
+    func containsLog(level: LogLevel, message: String) -> Bool {
+        contains {
+            if case let .log(eventLevel, eventMessage) = $0 {
+                return eventLevel == level && eventMessage == message
+            }
+            return false
+        }
+    }
+
+    func containsChangedFile(_ path: String) -> Bool {
+        contains {
+            if case let .changedFile(eventPath) = $0 {
+                return eventPath == path
+            }
+            return false
+        }
+    }
+
+    func containsFinished(exitCode: Int) -> Bool {
+        contains {
+            if case let .finished(eventExitCode) = $0 {
+                return eventExitCode == exitCode
+            }
+            return false
+        }
     }
 }
 

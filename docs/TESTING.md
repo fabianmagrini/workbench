@@ -30,6 +30,8 @@ The test target uses Swift Testing and covers:
 - duplicate-run prevention in `SessionOrchestrator`;
 - real process stdout, stderr, exit status, working-directory, environment, and
   cancellation behavior;
+- Codex CLI command construction, JSONL event translation, failure diagnostics,
+  and cancellation propagation;
 - the preview provider's complete event sequence.
 
 All persistence tests use `ModelConfiguration(isStoredInMemoryOnly: true)` and

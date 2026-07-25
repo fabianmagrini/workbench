@@ -78,12 +78,17 @@ Every integration conforms to `AgentProvider`, a `Sendable` protocol:
 5. Log, file, approval, and completion events update the active session.
 6. SwiftData persists the resulting state.
 
-`PreviewAgentProvider` is deterministic local scaffolding. A real CLI
-integration should add a new actor conforming to `AgentProvider` and translate
-process output into the existing event types. `LocalProcessRunner` is the
-shared execution boundary for those integrations: it captures stdout and
-stderr independently, supports working-directory and environment configuration,
-and terminates child processes when their calling task is cancelled.
+`CodexCLIProvider` is the first production integration and the application
+default. It runs `codex exec` with JSONL output inside the selected workspace
+and translates session, reasoning, command, file-change, error, and completion
+records into `AgentEvent` values. It deliberately uses the `workspace-write`
+sandbox and never bypasses Codex approvals or sandboxing.
+
+`PreviewAgentProvider` remains deterministic local scaffolding.
+`LocalProcessRunner` is the shared execution boundary for integrations: it
+captures stdout and stderr independently, supports working-directory and
+environment configuration, and terminates child processes when their calling
+task is cancelled.
 
 ## Concurrency boundaries
 

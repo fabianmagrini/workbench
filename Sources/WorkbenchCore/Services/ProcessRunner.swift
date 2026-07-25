@@ -67,6 +67,7 @@ public actor LocalProcessRunner: ProcessRunner {
         process.arguments = request.arguments
         process.currentDirectoryURL = request.currentDirectoryURL
         process.environment = request.environment
+        process.standardInput = FileHandle.nullDevice
         process.standardOutput = standardOutput
         process.standardError = standardError
 

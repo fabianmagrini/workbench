@@ -38,7 +38,7 @@ final class AppModel {
 
     private let sessionOrchestrator: SessionOrchestrator
 
-    init(agentProvider: any AgentProvider = PreviewAgentProvider()) {
+    init(agentProvider: any AgentProvider = CodexCLIProvider()) {
         sessionOrchestrator = SessionOrchestrator(agentProvider: agentProvider)
     }
 
